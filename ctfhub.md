@@ -174,3 +174,65 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool TRUE
 defaults delete com.apple.desktopservices DSDontWriteNetworkStores
 ```
 
+
+
+### Git泄露
+
+#### （log）
+
+​		当前大量开发人员使用git进行版本控制，对站点自动部署。如果配置不当,可能会将.git文件夹直接部署到线上环境。这就引起了git泄露漏洞。请尝试使用BugScanTeam的GitHack完成本题
+
+- **部署失误**：开发或运维人员在部署 Web 项目时，未排除 `.git` 目录，导致其被上传至生产服务器的 Web 根目录（如 `wwwroot`、`public` 等）。
+
+- **权限配置不当**：Web 服务器（如 Nginx、Apache）对 `.git` 目录未做访问限制，允许外部直接访问。
+
+- **目录遍历**：服务器存在目录遍历安全风险时，攻击者可通过构造路径（如 `../.git/HEAD`）绕过限制访问 `.git` 内容。
+
+  
+
+​	`.git` 目录的作用与组成
+
+Git 作为分布式版本控制系统，会在项目根目录生成 `.git` 目录，用于存储版本控制所需的所有元数据，包括：
+
+- **版本历史**：所有提交记录（`commits`）、分支（`branches`）、标签（`tags`）等。
+- **文件快照**：项目文件的不同版本数据（存储在 `objects` 目录）。
+- **配置信息**：仓库配置（`config`）、当前分支指针（`HEAD`）、索引文件（`index`）等。
+
+```
+下载安装 GitHack
+sudo git clone https://github.com/BugScanTeam/GitHack
+
+#使用方法：
+cd GitHack
+sudo python2 GitHack.py http://www.example.com/.git/
+执行该命令后，工具会尝试从目标 URL 还原 Git 仓库内容，还原后的文件会保存在当前目录下的 dist/ 目录中
+
+查看git log
+记录log id   commit的值
+
+获取flag   (git log 和 git reset法)
+(1)执行git log diff，比较add flag版本的代码修改日志
+sudo git log diff 351bb3e9683eaaaff31b27cfb4de54a7b3bb0463
+(2)执行git reset将代码切换为add flag版本的code
+sudo git reset --hard e231ebc4862d09d20a47a9b48925886d1b7eb958
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### (Stash)
+
+
+
+
+
+#### (Index)
