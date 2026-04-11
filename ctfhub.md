@@ -2,6 +2,96 @@
 
 ------
 
+## WEB前置技能
+
+### HTTP协议
+
+### (302跳转)
+
+```
+HTTP 302 Found 是一种常见的 临时重定向 状态码，表示请求的资源暂时位于响应头 Location 指定的新 URL，下次请求仍应使用原始地址。浏览器或客户端接收到该响应后，会自动向新地址发起请求。
+
+核心特性
+
+临时性：资源位置只是暂时改变，未来可能恢复原地址。
+搜索引擎行为：通常不会将原 URL 的 SEO 权重传递给新 URL。
+方法转换：多数浏览器会将原请求方法（如 POST）转换为 GET，这也是后来引入 307 Temporary Redirect 的原因。
+
+典型应用场景
+
+网站维护：将所有请求临时跳转到维护页面。
+A/B 测试或流量分流：部分用户被导向测试环境。
+HTTP→HTTPS 过渡：短期内强制使用 HTTPS，后续可改为 301。
+未登录跳转：访问受限页面时临时跳转到登录页，登录后返回原页面。
+
+响应示例
+
+HTTP/1.1 302 Found
+Location: https://www.example.com/new-page
+Content-Length: 0
+
+复制客户端会立即访问 https://www.example.com/new-page。
+
+Nginx 配置示例
+server {
+listen 80;
+server_name example.com;
+return 302 https://$host$request_uri;
+}
+
+Apache 配置示例
+Redirect 302 / https://example.com/maintenance.html
+
+与其他状态码对比
+
+301 Moved Permanently：永久重定向，搜索引擎会更新索引并传递权重。
+303 See Other：重定向到另一个资源，并强制使用 GET 方法。
+307 Temporary Redirect：与 302 类似，但保留原请求方法，避免 POST→GET 转换。
+
+最佳实践
+确认是临时重定向时使用 302，长期迁移应改为 301 或 307。
+避免滥用 302，以防 URL 劫持 等 SEO 风险。
+
+调试可用 curl -I 或浏览器开发者工具查看 Status 与 Location 头
+```
+
+
+
+### (Cookie)
+
+​		在网站中，http请求是无状态的。也就是说即使第一次和服务器连接后并且登录成功后，第二次请求服务器依然不能知道当前请求是哪个用户。cookie的出现就是为了解决这个问题，第一次登录后服务器返回一些数据（cookie）给浏览器，然后浏览器保存在本地，当该用户发送第二次请求的时候，就会自动的把上次请求存储的cookie数据自动的携带给服务器，服务器通过浏览器携带的数据就能判断当前用户是哪个了。cookie存储的数据量有限，不同的浏览器有不同的存储大小，但一般不超过4KB。因此使用cookie只能存储一些小量的数据。
+
+​		session和cookie的作用有点类似，都是为了存储用户相关的信息。不同的是，cookie是存储在本地浏览器，而session存储在服务器。存储在服务器的数据会更加的安全，不容易被窃取。但存储在服务器也有一定的弊端，就是会占用服务器的资源，但现在服务器已经发展至今，一些session信息还是绰绰有余的。
+
+[一文彻底搞清session、cookie、token的区别 - 知乎](https://zhuanlan.zhihu.com/p/631349844)
+
+
+
+### (基础认证)
+
+​		在HTTP中，基本认证（英语：Basic access authentication）是允许http用户代理（如：网页浏览器）在请求时，提供 用户名 和 密码 的一种方式。
+
+```
+BP爆破
+狙击手模式（Sniper）——它使用一组Payload集合，依次替换Payload位置上（一次攻击只能使用一个Payload位置）被§标志的文本（而没有被§标志的文本将不受影响），对服务器端进行请求，通常用于测试请求参数是否存在漏洞。
+
+攻城锤模式（Battering ram）——它使用单一的Payload集合，依次替换Payload位置上被§标志的文本（而没有被§标志的文本将不受影响），对服务器端进行请求，与狙击手模式的区别在于，如果有多个参数且都为Payload位置标志时，使用的Payload值是相同的，而狙击手模式只能使用一个Payload位置标志。
+
+草叉模式（Pitchfork ）——它可以使用多组Payload集合，在每一个不同的Payload标志位置上（最多20个），遍历所有的Payload。举例来说，如果有两个Payload标志位置，第一个Payload值为A和B，第二个Payload值为C和D，则发起攻击时，将共发起两次攻击，第一次使用的Payload分别为A和C，第二次使用的Payload分别为B和D。
+
+集束炸弹模式（Cluster bomb） ——它可以使用多组Payload集合，在每一个不同的Payload标志位置上（最多20个），依次遍历所有的Payload。它与草叉模式的主要区别在于，执行的Payload数据Payload组的乘积。举例来说，如果有两个Payload标志位置，第一个Payload值为A和B，第二个Payload值为C和D，则发起攻击时，将共发起四次攻击，第一次使用的Payload分别为A和C，第二次使用的Payload分别为A和D，第三次使用的Payload分别为B和C，第四次使用的Payload分别为B和D。
+```
+
+[Burp Suite-Intruder功能详解与使用实例 - 墨天轮](https://www.modb.pro/db/190929)
+
+[ctfhub技能树—web前置技能—http协议—基础认证 - anweilx - 博客园](https://www.cnblogs.com/anweilx/p/12410622.html)
+
+（响应包源代码）
+
+
+
+
+
 ## RCE
 
 
